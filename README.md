@@ -59,4 +59,4 @@ To run the unit tests for the project, use the following command:
 
 ```sh
 npm run test
-This comprehensive prompt should allow Cursor AI to replicate the entire project exactly as we designed it. 
+This comprehensive prompt should allow Cursor AI to replicate the entire project exactly as we designed it. # front
