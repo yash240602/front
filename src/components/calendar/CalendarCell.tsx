@@ -12,7 +12,7 @@ import {
   ArrowDownward as ArrowDownwardIcon
 } from '@mui/icons-material';
 import { BarChart, Bar, Cell, ResponsiveContainer } from 'recharts';
-import { CalendarCellData } from '../../types/data';
+import type { CalendarCellData } from '../../types/data';
 import { useCalendarStore } from '../../store/calendarStore';
 
 interface CalendarCellProps {

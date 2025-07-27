@@ -5,7 +5,7 @@ import {
   Box,
   useTheme,
   alpha,
-  PaletteMode
+  type PaletteMode
 } from '@mui/material';
 import ThemeControls from './ThemeControls';
 

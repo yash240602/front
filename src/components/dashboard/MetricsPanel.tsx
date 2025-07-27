@@ -10,8 +10,6 @@ import {
   useTheme,
   alpha,
   Chip,
-  Skeleton,
-  Alert,
   Paper
 } from '@mui/material';
 import {
@@ -19,17 +17,16 @@ import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
   BarChart as VolumeIcon,
-  ShowChart as PriceIcon,
   CalendarToday as CalendarIcon
 } from '@mui/icons-material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 import { useCalendarStore } from '../../store/calendarStore';
 import { useMarketDataStore } from '../../store/marketDataStore';
-import { DailyMetrics } from '../../types/data';
+import type { DailyMetrics } from '../../types/data';
 
 // A small, reusable component for individual metric display
 const MetricItem: React.FC<{ title: string; value: string; color?: string }> = ({ title, value, color }) => (
-  <Grid item xs={6} sm={3} md={6}>
+  <Grid size={{ xs: 6, sm: 3, md: 6 }}>
     <Typography variant="body2" color="text.secondary" noWrap>{title}</Typography>
     <Typography variant="h6" fontWeight={500} color={color || 'text.primary'}>
       {value}

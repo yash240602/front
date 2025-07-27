@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { DailyMetrics } from '../types/data';
+import type { DailyMetrics } from '../types/data';
 import { fetchCoinData } from '../api/coingecko';
 
 interface MarketDataState {
@@ -38,14 +38,12 @@ export const useMarketDataStore = create<MarketDataState>((set, get) => ({
   fetchHistoricalData: async (instrument) => {
     const currentInstrument = instrument || get().instrument;
     const { start, end } = get().dateRange;
-    const timeframe = get().timeframe;
     
     set({ isLoading: true, error: null });
     
     try {
       const data = await fetchCoinData(
         currentInstrument, 
-        timeframe,
         start.getTime(),
         end.getTime()
       );

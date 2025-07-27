@@ -9,7 +9,7 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-  PaletteMode 
+  type PaletteMode 
 } from '@mui/material';
 import { 
   Palette as PaletteIcon,

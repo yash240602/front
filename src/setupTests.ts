@@ -15,7 +15,7 @@ vi.mock('@mui/icons-material', async (importOriginal) => {
 
   // Use a Proxy to return a dummy React component for any icon requested.
   return new Proxy({}, {
-    get: (target, prop) => {
+    get: (_target, prop) => {
       // A simple dummy component that renders nothing but can be identified in tests.
       // It's a proper function component, which satisfies React Testing Library.
       const MockIcon = () => React.createElement('svg', { 'data-testid': `mock-icon-${String(prop)}` });
