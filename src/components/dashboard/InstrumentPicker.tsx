@@ -75,6 +75,7 @@ const InstrumentPicker = () => {
             placeholder="Select a trading pair"
             error={!!error}
             helperText={error || ''}
+            aria-label="Select trading pair instrument"
             InputProps={{
               ...params.InputProps,
               endAdornment: (

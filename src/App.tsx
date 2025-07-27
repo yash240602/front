@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { ThemeProvider, CssBaseline, Box, Container, alpha } from '@mui/material';
 import { getTheme } from './utils/theme';
 import useAppTheme from './hooks/useAppTheme';
@@ -6,10 +7,25 @@ import InstrumentPicker from './components/dashboard/InstrumentPicker';
 import SeasonalityCalendar from './components/calendar/SeasonalityCalendar';
 import MetricsPanel from './components/dashboard/MetricsPanel';
 import ErrorBoundary from './components/common/ErrorBoundary';
+import CommandPalette from './components/common/CommandPalette';
 
 const App = () => {
   const { themeName, themeMode, setThemeName, toggleThemeMode } = useAppTheme();
   const theme = getTheme(themeName, themeMode);
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+
+  // Add keyboard shortcut for Command Palette
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+        event.preventDefault();
+        setCommandPaletteOpen(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <ErrorBoundary>
@@ -51,6 +67,12 @@ const App = () => {
             Market Seasonality Explorer &copy; {new Date().getFullYear()}
           </Box>
         </Box>
+
+        {/* Command Palette */}
+        <CommandPalette 
+          open={commandPaletteOpen} 
+          onClose={() => setCommandPaletteOpen(false)} 
+        />
       </ThemeProvider>
     </ErrorBoundary>
   );

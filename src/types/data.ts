@@ -59,6 +59,8 @@ export interface DailyMetrics {
   };
   /** Average True Range - volatility indicator */
   atr?: number;
+  /** 30-day rolling volatility (standard deviation) */
+  volatility?: number;
   /** Bollinger Bands */
   bollinger?: {
     /** Upper band value */

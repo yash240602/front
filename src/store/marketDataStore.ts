@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { DailyMetrics } from '../types/data';
 import { fetchCoinData } from '../api/coingecko';
+import { calculateVolatility } from '../utils/volatilityService';
 
 interface MarketDataState {
   historicalData: DailyMetrics[];
@@ -50,12 +51,15 @@ export const useMarketDataStore = create<MarketDataState>((set, get) => ({
         end.getTime()
       );
       
+      // Enrich data with volatility calculations
+      const enrichedData = calculateVolatility(data);
+      
       if (instrument) {
         set({ instrument: currentInstrument });
       }
       
       set({ 
-        historicalData: data,
+        historicalData: enrichedData,
         isLoading: false 
       });
     } catch (error) {

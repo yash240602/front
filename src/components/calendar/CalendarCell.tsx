@@ -1,187 +1,195 @@
 import React, { useMemo } from 'react';
-import { Box, Typography, Tooltip, useTheme, alpha, Chip } from '@mui/material';
-import { ArrowUpward as ArrowUpwardIcon, ArrowDownward as ArrowDownwardIcon, TrendingUp as TrendingUpIcon, TrendingDown as TrendingDownIcon } from '@mui/icons-material';
+import { Box, Typography, Tooltip, useTheme, alpha } from '@mui/material';
+import { ArrowUpward as ArrowUpwardIcon, ArrowDownward as ArrowDownwardIcon } from '@mui/icons-material';
 import type { CalendarCellData } from '../../types/data';
 import { useCalendarStore } from '../../store/calendarStore';
 
 interface CalendarCellProps {
   data: CalendarCellData;
-  maxVolume: number;
+  maxVolumeInMonth: number;
+  maxVolatilityInMonth: number;
 }
 
-// Enhanced gradient backgrounds for performance
-const getPerformanceGradient = (changePercent: number | undefined, theme: any) => {
-  if (changePercent === undefined) return `linear-gradient(135deg, ${alpha(theme.palette.grey[500], 0.1)} 0%, ${alpha(theme.palette.grey[600], 0.2)} 100%)`;
-  
+const getChangeColor = (changePercent: number | undefined, theme: any) => {
+  if (changePercent === undefined) return alpha(theme.palette.background.paper, 0.4);
   const intensity = Math.min(Math.abs(changePercent) / 5, 1);
-  
-  if (changePercent > 3) return `linear-gradient(135deg, ${theme.palette.success.light} 0%, ${theme.palette.success.main} 100%)`;
-  if (changePercent > 0) {
-    const light = alpha(theme.palette.success.main, 0.2 + intensity * 0.4);
-    const dark = alpha(theme.palette.success.main, 0.3 + intensity * 0.5);
-    return `linear-gradient(135deg, ${light} 0%, ${dark} 100%)`;
-  }
-  if (changePercent < -3) return `linear-gradient(135deg, ${theme.palette.error.light} 0%, ${theme.palette.error.main} 100%)`;
-  if (changePercent < 0) {
-    const light = alpha(theme.palette.error.main, 0.2 + intensity * 0.4);
-    const dark = alpha(theme.palette.error.main, 0.3 + intensity * 0.5);
-    return `linear-gradient(135deg, ${light} 0%, ${dark} 100%)`;
-  }
-  return `linear-gradient(135deg, ${alpha(theme.palette.grey[500], 0.2)} 0%, ${alpha(theme.palette.grey[600], 0.3)} 100%)`;
+  if (changePercent > 0) return alpha(theme.palette.success.light, 0.2 + intensity * 0.6);
+  if (changePercent < 0) return alpha(theme.palette.error.light, 0.2 + intensity * 0.6);
+  return alpha(theme.palette.action.selected, 0.3);
 };
 
-const CalendarCell: React.FC<CalendarCellProps> = ({ data, maxVolume }) => {
+const getVolatilityColor = (volatility: number | undefined, maxVolatility: number, theme: any) => {
+  if (volatility === undefined || maxVolatility === 0) return alpha(theme.palette.background.paper, 0.4);
+  const intensity = Math.min(volatility / maxVolatility, 1);
+  // High volatility = orange/warning color
+  return alpha(theme.palette.warning.light, 0.2 + intensity * 0.6);
+};
+
+const CalendarCell: React.FC<CalendarCellProps> = ({ data, maxVolumeInMonth, maxVolatilityInMonth }) => {
   const theme = useTheme();
-  const setSelectedDate = useCalendarStore(state => state.setSelectedDate);
+  const { 
+    setSelectedDate, 
+    visualizationMode, 
+    rangeStart, 
+    rangeEnd, 
+    setDateRange 
+  } = useCalendarStore(state => ({
+    setSelectedDate: state.setSelectedDate,
+    visualizationMode: state.visualizationMode,
+    rangeStart: state.rangeStart,
+    rangeEnd: state.rangeEnd,
+    setDateRange: state.setDateRange
+  }));
 
-  const backgroundGradient = useMemo(() => getPerformanceGradient(data.changePercent, theme), [data.changePercent, theme]);
-  const textColor = useMemo(() => {
-    if (!data.changePercent) return theme.palette.text.primary;
-    const intensity = Math.abs(data.changePercent) / 5;
-    return intensity > 0.7 ? theme.palette.common.white : theme.palette.text.primary;
-  }, [data.changePercent, theme]);
-
-  // Calculate volume ring sweep percentage (0-100)
+  const backgroundColor = useMemo(() => {
+    if (visualizationMode === 'volatility') {
+      return getVolatilityColor(data.metrics?.volatility, maxVolatilityInMonth, theme);
+    } else {
+      return getChangeColor(data.changePercent, theme);
+    }
+  }, [data.changePercent, data.metrics?.volatility, maxVolatilityInMonth, visualizationMode, theme]);
+  
   const volumePct = useMemo(() => {
-    if (!data.volume || !maxVolume) return 0;
-    return Math.min((data.volume / maxVolume) * 100, 100);
-  }, [data.volume, maxVolume]);
+    if (!data.volume || !maxVolumeInMonth) return 0;
+    return Math.min((data.volume / maxVolumeInMonth) * 100, 100);
+  }, [data.volume, maxVolumeInMonth]);
 
-  const handleClick = () => {
-    if (data.hasData) {
-      setSelectedDate(data.date.toISOString().split('T')[0]);
+  const isInRange = useMemo(() => {
+    if (!rangeStart || !rangeEnd) return false;
+    
+    const dateStr = data.date.toISOString().split('T')[0];
+    const currentDate = new Date(dateStr);
+    const startDate = new Date(rangeStart);
+    const endDate = new Date(rangeEnd);
+    
+    return currentDate >= startDate && currentDate <= endDate;
+  }, [data.date, rangeStart, rangeEnd]);
+
+  const handleClick = (event: React.MouseEvent) => {
+    if (!data.hasData) return;
+    
+    const dateStr = data.date.toISOString().split('T')[0];
+    
+    if (event.shiftKey && rangeStart && !rangeEnd) {
+      // Complete range selection
+      const startDate = new Date(rangeStart);
+      const endDate = new Date(dateStr);
+      
+      // Ensure start is before end
+      if (startDate <= endDate) {
+        setDateRange(rangeStart, dateStr);
+      } else {
+        setDateRange(dateStr, rangeStart);
+      }
+    } else {
+      // Start new selection or range
+      setSelectedDate(dateStr);
+      setDateRange(dateStr, null);
     }
   };
 
-  const todayRingGradient = `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`;
-  const selectedRingGradient = `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`;
-
   return (
-    <Tooltip 
-      title={
-        data.hasData && data.metrics ? 
-        `${data.date.toLocaleDateString()} • Change: ${data.metrics.changePercent.toFixed(2)}% • Volume: ${data.volume?.toLocaleString()}` : 
-        'No data available'
-      } 
-      arrow 
-      enterDelay={300}
-    >
-      <Box
-        onClick={handleClick}
-        sx={{
-          width: '100%',
-          aspectRatio: '1 / 1',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: data.hasData ? 'pointer' : 'default',
-          background: backgroundGradient,
-          position: 'relative',
-          opacity: data.isCurrentMonth ? 1 : 0.4,
-          border: data.isSelected
-            ? `3px solid transparent`
-            : data.isToday
-            ? `3px solid transparent`
-            : `2px solid ${alpha(theme.palette.divider, 0.15)}`,
-          backgroundClip: data.isSelected || data.isToday ? 'padding-box' : undefined,
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          boxShadow: data.hasData ? '0 2px 8px rgba(0,0,0,0.12)' : '0 1px 3px rgba(0,0,0,0.08)',
-          '&:hover': {
-            transform: data.hasData ? 'translateY(-6px) scale(1.08)' : 'translateY(-2px)',
-            boxShadow: data.hasData ? '0 12px 32px rgba(0,0,0,0.25)' : '0 4px 12px rgba(0,0,0,0.15)',
-            zIndex: 10,
-            '& .performance-chip': {
-              transform: 'translateY(-2px)',
-              opacity: 1,
-            },
-            '& .day-number': {
-              transform: 'scale(1.1)',
-            }
-          },
-          // Today's gradient ring
-          ...(data.isToday && {
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              inset: '-3px',
-              borderRadius: '50%',
-              padding: '3px',
-              background: todayRingGradient,
-              WebkitMask: 'radial-gradient(closest-side, transparent 88%, #000 89%)',
-              pointerEvents: 'none',
-            }
-          }),
-          // Selected gradient ring
-          ...(data.isSelected && {
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              inset: '-3px',
-              borderRadius: '50%',
-              padding: '3px',
-              background: selectedRingGradient,
-              WebkitMask: 'radial-gradient(closest-side, transparent 88%, #000 89%)',
-              pointerEvents: 'none',
-            }
-          }),
-          // Volume ring
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            inset: 0,
-            borderRadius: '50%',
-            padding: '2px',
-            background: volumePct > 0 ? `conic-gradient(${theme.palette.primary.main} ${volumePct}%, transparent ${volumePct}% 100%)` : 'none',
-            WebkitMask: 'radial-gradient(closest-side, transparent 75%, #000 76%)',
-            pointerEvents: 'none',
-          },
-        }}
+    <>
+      <style>
+        {`
+          @keyframes sweep {
+            from { --sweep-angle: 0deg; }
+            to { --sweep-angle: ${volumePct * 3.6}deg; }
+          }
+          @keyframes ripple {
+            from { transform: scale(0); opacity: 0.3; }
+            to { transform: scale(1.6); opacity: 0; }
+          }
+        `}
+      </style>
+      <Tooltip 
+        title={data.hasData && data.metrics ? `Change: ${data.metrics.changePercent.toFixed(2)}% | Vol: ${data.volume?.toLocaleString()}` : 'No data'} 
+        arrow 
+        enterDelay={400}
       >
-        <Typography 
-          className="day-number"
-          variant="body2" 
-          fontWeight={data.isToday ? 800 : 600}
-          sx={{ 
-            color: textColor,
-            fontSize: data.isToday ? '1rem' : '0.875rem',
-            transition: 'all 0.2s ease',
-            textShadow: textColor === theme.palette.common.white ? '0 1px 2px rgba(0,0,0,0.3)' : 'none'
+        <Box
+          onClick={handleClick}
+          tabIndex={data.hasData ? 0 : -1}
+          role="gridcell"
+          aria-label={`${data.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}${data.hasData ? `, ${data.changePercent?.toFixed(2)}% change` : ', no data'}`}
+          aria-selected={data.isSelected}
+          sx={{
+            width: '100%',
+            aspectRatio: '1 / 1',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: data.hasData ? 'zoom-in' : 'default',
+            backgroundColor,
+            position: 'relative',
+            opacity: data.isCurrentMonth ? 1 : 0.4,
+            border: data.isSelected
+              ? `2px solid ${theme.palette.primary.main}`
+              : data.isToday
+              ? `2px solid ${theme.palette.secondary.main}`
+              : isInRange
+              ? `2px solid ${alpha(theme.palette.primary.main, 0.5)}`
+              : `2px solid transparent`,
+            transition: 'all 0.2s ease-in-out',
+            '&:focus': {
+              outline: `2px solid ${theme.palette.primary.main}`,
+              outlineOffset: '2px',
+              zIndex: 3
+            },
+            '&:hover': {
+              transform: data.hasData ? 'perspective(600px) translateZ(8px)' : 'none',
+              borderColor: data.hasData ? theme.palette.primary.light : 'transparent',
+              zIndex: 2,
+              boxShadow: data.hasData ? `0 8px 24px ${alpha(theme.palette.common.black, 0.25)}` : 'none',
+            },
+            '&::before': { // Volume Ring
+              content: '""',
+              position: 'absolute',
+              inset: 0,
+              borderRadius: '50%',
+              padding: '2px',
+              '--clr': alpha(theme.palette.primary.light, 0.8),
+              '--pct': `${volumePct * 3.6}deg`,
+              background: `conic-gradient(var(--clr) var(--pct), transparent var(--pct))`,
+              WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+              WebkitMaskComposite: 'xor',
+              maskComposite: 'exclude',
+              pointerEvents: 'none',
+              animation: 'sweep 0.6s ease-out forwards',
+            },
+            '&:active::after': { // Ripple Effect
+                content: '""',
+                position: 'absolute',
+                inset: 0,
+                borderRadius: '50%',
+                background: theme.palette.primary.light,
+                animation: 'ripple 0.4s ease-out',
+            },
+            // Range overlay
+            ...(isInRange && {
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                inset: 0,
+                borderRadius: '50%',
+                background: alpha(theme.palette.primary.main, 0.1),
+                pointerEvents: 'none',
+              }
+            })
           }}
         >
-          {data.day}
-        </Typography>
-
-        {data.hasData && data.changePercent !== undefined && Math.abs(data.changePercent) > 0.5 && (
-          <Chip
-            className="performance-chip"
-            size="small"
-            label={`${data.changePercent > 0 ? '+' : ''}${data.changePercent.toFixed(1)}%`}
-            icon={data.changePercent > 0 ? <TrendingUpIcon /> : <TrendingDownIcon />}
-            sx={{
-              position: 'absolute',
-              top: -8,
-              right: -8,
-              height: '20px',
-              fontSize: '0.65rem',
-              fontWeight: 700,
-              backgroundColor: data.changePercent > 0 ? theme.palette.success.main : theme.palette.error.main,
-              color: theme.palette.common.white,
-              opacity: 0.9,
-              transition: 'all 0.2s ease',
-              '& .MuiChip-icon': {
-                fontSize: '0.75rem',
-                color: 'inherit'
-              },
-              '& .MuiChip-label': {
-                paddingLeft: '6px',
-                paddingRight: '8px'
-              }
-            }}
-          />
-        )}
-      </Box>
-    </Tooltip>
+          <Typography variant="body1" fontWeight={data.isToday ? 700 : 500}>
+            {data.day}
+          </Typography>
+          {data.hasData && data.changePercent !== undefined && (
+            <Box sx={{ position: 'absolute', bottom: '15%', color: data.changePercent > 0 ? 'success.main' : 'error.main' }}>
+              {data.changePercent > 0 ? <ArrowUpwardIcon sx={{ fontSize: '1rem' }} /> : <ArrowDownwardIcon sx={{ fontSize: '1rem' }} />}
+            </Box>
+          )}
+        </Box>
+      </Tooltip>
+    </>
   );
 };
 
