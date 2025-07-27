@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { PaletteMode } from '@mui/material';
+import type { PaletteMode } from '@mui/material/styles';
 
 type ThemeName = 'default' | 'highContrast' | 'colorblind';
 
@@ -49,4 +49,4 @@ export const useAppTheme = (): UseAppThemeReturn => {
   };
 };
 
-export default useAppTheme; 
+export default useAppTheme;

@@ -1,5 +1,21 @@
-import { createTheme, Theme, PaletteMode } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
+import type { Theme, PaletteMode } from '@mui/material/styles'; // <-- FIXED: type import
 import { blue, green, red, grey, orange, purple } from '@mui/material/colors';
+import { CSSProperties } from 'react';
+
+// This augmentation is necessary to add custom properties to the theme safely.
+declare module '@mui/material/styles' {
+  interface Theme {
+    customProps: {
+      chart: ChartColors;
+    };
+  }
+  interface ThemeOptions {
+    customProps?: {
+      chart: ChartColors;
+    };
+  }
+}
 
 // Shared typography settings
 const typography = {
@@ -12,21 +28,21 @@ const typography = {
     'Arial',
     'sans-serif',
   ].join(','),
-  h1: { fontSize: '2.5rem', fontWeight: 700, },
-  h2: { fontSize: '2rem', fontWeight: 600, },
-  h3: { fontSize: '1.75rem', fontWeight: 600, },
-  h4: { fontSize: '1.5rem', fontWeight: 500, },
-  h5: { fontSize: '1.25rem', fontWeight: 500, },
-  h6: { fontSize: '1rem', fontWeight: 500, },
-  body1: { lineHeight: 1.6, },
-  button: { fontWeight: 500, textTransform: 'none', },
+  h1: { fontSize: '2.5rem', fontWeight: 700 },
+  h2: { fontSize: '2rem', fontWeight: 600 },
+  h3: { fontSize: '1.75rem', fontWeight: 600 },
+  h4: { fontSize: '1.5rem', fontWeight: 500 },
+  h5: { fontSize: '1.25rem', fontWeight: 500 },
+  h6: { fontSize: '1rem', fontWeight: 500 },
+  body1: { lineHeight: 1.6 },
+  button: { fontWeight: 500, textTransform: 'none' as CSSProperties['textTransform'] },
 };
 
 // Shared component overrides
 const components = {
-  MuiButton: { styleOverrides: { root: { borderRadius: 8, }, }, },
-  MuiCard: { styleOverrides: { root: { borderRadius: 12, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.05)', }, }, },
-  MuiChip: { styleOverrides: { root: { borderRadius: 6, }, }, },
+  MuiButton: { styleOverrides: { root: { borderRadius: 8 } } },
+  MuiCard: { styleOverrides: { root: { borderRadius: 12, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.05)' } } },
+  MuiChip: { styleOverrides: { root: { borderRadius: 6 } } },
 };
 
 // Chart color palettes
@@ -44,8 +60,8 @@ type ChartColors = {
 // Default theme - Modern, clean, professional
 export const createDefaultTheme = (mode: PaletteMode): Theme => {
   const isDark = mode === 'dark';
-  
-  const chartColors: ChartColors = isDark 
+
+  const chartColors: ChartColors = isDark
     ? {
         positive: green[400],
         negative: red[400],
@@ -66,21 +82,21 @@ export const createDefaultTheme = (mode: PaletteMode): Theme => {
         text: grey[900],
         volume: blue[200],
       };
-  
+
   return createTheme({
     palette: {
       mode,
-      primary: { main: blue[isDark ? 300 : 600], },
-      secondary: { main: purple[isDark ? 300 : 600], },
-      error: { main: red[isDark ? 300 : 600], },
-      success: { main: green[isDark ? 400 : 600], },
-      warning: { main: orange[isDark ? 300 : 700], },
-      background: { default: isDark ? '#121212' : '#f5f5f5', paper: isDark ? '#1e1e1e' : '#ffffff', },
-      text: { primary: isDark ? '#e0e0e0' : '#212121', secondary: isDark ? '#b0b0b0' : '#666666', },
+      primary: { main: blue[isDark ? 300 : 600] },
+      secondary: { main: purple[isDark ? 300 : 600] },
+      error: { main: red[isDark ? 300 : 600] },
+      success: { main: green[isDark ? 400 : 600] },
+      warning: { main: orange[isDark ? 300 : 700] },
+      background: { default: isDark ? '#121212' : '#f5f5f5', paper: isDark ? '#1e1e1e' : '#ffffff' },
+      text: { primary: isDark ? '#e0e0e0' : '#212121', secondary: isDark ? '#b0b0b0' : '#666666' },
     },
     typography,
     components,
-    customProps: { chart: chartColors, },
+    customProps: { chart: chartColors },
   });
 };
 
@@ -90,83 +106,83 @@ export const createHighContrastTheme = (mode: PaletteMode): Theme => {
   
   const chartColors: ChartColors = isDark 
     ? {
-        positive: '#00FF00', // Bright green
-        negative: '#FF0000', // Bright red
-        neutral: '#FFFFFF', // White
-        line: '#FFFFFF', // White
-        grid: '#444444', // Dark grey
-        background: '#000000', // Black
-        text: '#FFFFFF', // White
-        volume: '#00AAFF', // Bright blue
+        positive: '#00FF00',
+        negative: '#FF0000',
+        neutral: '#FFFFFF',
+        line: '#FFFFFF',
+        grid: '#444444',
+        background: '#000000',
+        text: '#FFFFFF',
+        volume: '#00AAFF',
       }
     : {
-        positive: '#008800', // Dark green
-        negative: '#CC0000', // Dark red
-        neutral: '#000000', // Black
-        line: '#000000', // Black
-        grid: '#CCCCCC', // Light grey
-        background: '#FFFFFF', // White
-        text: '#000000', // Black
-        volume: '#0055AA', // Dark blue
+        positive: '#008800',
+        negative: '#CC0000',
+        neutral: '#000000',
+        line: '#000000',
+        grid: '#CCCCCC',
+        background: '#FFFFFF',
+        text: '#000000',
+        volume: '#0055AA',
       };
   
   return createTheme({
     palette: {
       mode,
-      primary: { main: isDark ? '#FFFFFF' : '#000000', },
-      secondary: { main: isDark ? '#FFFF00' : '#6200EE', },
-      error: { main: '#FF0000', },
-      success: { main: '#00CC00', },
-      warning: { main: '#FF6600', },
-      background: { default: isDark ? '#000000' : '#FFFFFF', paper: isDark ? '#121212' : '#FFFFFF', },
-      text: { primary: isDark ? '#FFFFFF' : '#000000', secondary: isDark ? '#DDDDDD' : '#333333', },
+      primary: { main: isDark ? '#FFFFFF' : '#000000' },
+      secondary: { main: isDark ? '#FFFF00' : '#6200EE' },
+      error: { main: '#FF0000' },
+      success: { main: '#00CC00' },
+      warning: { main: '#FF6600' },
+      background: { default: isDark ? '#000000' : '#FFFFFF', paper: isDark ? '#121212' : '#FFFFFF' },
+      text: { primary: isDark ? '#FFFFFF' : '#000000', secondary: isDark ? '#DDDDDD' : '#333333' },
     },
-    typography: { ...typography, button: { ...typography.button, fontWeight: 700, }, },
-    components: { ...components, MuiButton: { styleOverrides: { root: { borderRadius: 4, fontWeight: 700, border: isDark ? '1px solid white' : '1px solid black', }, }, }, },
-    customProps: { chart: chartColors, },
+    typography: { ...typography, button: { ...typography.button, fontWeight: 700 } },
+    components: { ...components, MuiButton: { styleOverrides: { root: { borderRadius: 4, fontWeight: 700, border: isDark ? '1px solid white' : '1px solid black' } } } },
+    customProps: { chart: chartColors },
   });
 };
 
-// Colorblind-friendly theme - Safe for deuteranopia, protanopia, tritanopia
+// Colorblind-friendly theme
 export const createColorblindFriendlyTheme = (mode: PaletteMode): Theme => {
   const isDark = mode === 'dark';
   
   const chartColors: ChartColors = isDark 
     ? {
-        positive: '#0072B2', // Blue (instead of green)
-        negative: '#D55E00', // Orange (instead of red)
-        neutral: '#F0E442', // Yellow
-        line: '#FFFFFF', // White
-        grid: '#444444', // Dark grey
-        background: '#121212', // Dark background
-        text: '#FFFFFF', // White
-        volume: '#56B4E9', // Light blue
+        positive: '#0072B2',
+        negative: '#D55E00',
+        neutral: '#F0E442',
+        line: '#FFFFFF',
+        grid: '#444444',
+        background: '#121212',
+        text: '#FFFFFF',
+        volume: '#56B4E9',
       }
     : {
-        positive: '#0072B2', // Blue (instead of green)
-        negative: '#D55E00', // Orange (instead of red)
-        neutral: '#CC79A7', // Pink
-        line: '#000000', // Black
-        grid: '#DDDDDD', // Light grey
-        background: '#FFFFFF', // White
-        text: '#000000', // Black
-        volume: '#56B4E9', // Light blue
+        positive: '#0072B2',
+        negative: '#D55E00',
+        neutral: '#CC79A7',
+        line: '#000000',
+        grid: '#DDDDDD',
+        background: '#FFFFFF',
+        text: '#000000',
+        volume: '#56B4E9',
       };
   
   return createTheme({
     palette: {
       mode,
-      primary: { main: '#0072B2', },
-      secondary: { main: '#CC79A7', },
-      error: { main: '#D55E00', },
-      success: { main: '#009E73', },
-      warning: { main: '#F0E442', },
-      background: { default: isDark ? '#121212' : '#f5f5f5', paper: isDark ? '#1e1e1e' : '#ffffff', },
-      text: { primary: isDark ? '#e0e0e0' : '#212121', secondary: isDark ? '#b0b0b0' : '#666666', },
+      primary: { main: '#0072B2' },
+      secondary: { main: '#CC79A7' },
+      error: { main: '#D55E00' },
+      success: { main: '#009E73' },
+      warning: { main: '#F0E442' },
+      background: { default: isDark ? '#121212' : '#f5f5f5', paper: isDark ? '#1e1e1e' : '#ffffff' },
+      text: { primary: isDark ? '#e0e0e0' : '#212121', secondary: isDark ? '#b0b0b0' : '#666666' },
     },
     typography,
     components,
-    customProps: { chart: chartColors, },
+    customProps: { chart: chartColors },
   });
 };
 
@@ -192,17 +208,27 @@ export const getTheme = (themeName: string, mode: PaletteMode = 'light'): Theme 
   }
 };
 
-// Declare module augmentation for custom theme properties
-declare module '@mui/material/styles' {
-  interface Theme {
-    customProps: {
-      chart: ChartColors;
-    };
-  }
-  
-  interface ThemeOptions {
-    customProps?: {
-      chart?: ChartColors;
-    };
-  }
-} 
+const getDesignTokens = (mode: PaletteMode) => ({
+  palette: {
+    mode,
+    ...(mode === 'light'
+      ? {
+          primary: {
+            main: '#1976d2',
+          },
+          background: {
+            default: '#f5f5f5',
+          },
+        }
+      : {
+          primary: {
+            main: '#90caf9',
+          },
+          background: {
+            default: '#121212',
+          },
+        }),
+  },
+});
+
+export const theme = (mode: PaletteMode) => createTheme(getDesignTokens(mode));

@@ -8,9 +8,9 @@ import {
   Switch,
   ListItemIcon,
   ListItemText,
-  Typography,
-  PaletteMode 
+  Typography
 } from '@mui/material';
+import type { PaletteMode } from '@mui/material';
 import { 
   Palette as PaletteIcon,
   Brightness4 as DarkModeIcon,
@@ -135,4 +135,4 @@ const ThemeControls = ({
   );
 };
 
-export default ThemeControls; 
+export default ThemeControls;
