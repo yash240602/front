@@ -1,6 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 html, body, #root {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-image: url('https://images.unsplash.com/photo-1639755243943-3594a4a5b4a9?q=80&w=3540&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  overflow-x: hidden;
 }

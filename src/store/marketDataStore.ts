@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { DailyMetrics } from '../types/data';
+import type { DailyMetrics } from '../types/data';
 import { fetchCoinData } from '../api/coingecko';
 
 interface MarketDataState {
