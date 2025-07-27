@@ -78,7 +78,7 @@ const SeasonalityCalendar = () => {
     firstDayOfGrid.setDate(firstDayOfGrid.getDate() - firstDayOfMonth.getDay());
     
     const totalDays = 42;
-    let currentDate = new Date(firstDayOfGrid);
+    const currentDate = new Date(firstDayOfGrid);
     
     for (let i = 0; i < totalDays; i++) {
       const date = new Date(currentDate);
