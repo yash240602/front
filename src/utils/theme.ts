@@ -1,4 +1,4 @@
-import { createTheme, Theme, PaletteMode } from '@mui/material';
+import { createTheme, type Theme, type PaletteMode } from '@mui/material';
 import { blue, green, red, grey, orange, purple } from '@mui/material/colors';
 
 // Shared typography settings
@@ -19,7 +19,7 @@ const typography = {
   h5: { fontSize: '1.25rem', fontWeight: 500, },
   h6: { fontSize: '1rem', fontWeight: 500, },
   body1: { lineHeight: 1.6, },
-  button: { fontWeight: 500, textTransform: 'none', },
+  button: { fontWeight: 500, textTransform: 'none' as const, },
 };
 
 // Shared component overrides
@@ -121,7 +121,7 @@ export const createHighContrastTheme = (mode: PaletteMode): Theme => {
       background: { default: isDark ? '#000000' : '#FFFFFF', paper: isDark ? '#121212' : '#FFFFFF', },
       text: { primary: isDark ? '#FFFFFF' : '#000000', secondary: isDark ? '#DDDDDD' : '#333333', },
     },
-    typography: { ...typography, button: { ...typography.button, fontWeight: 700, }, },
+    typography: { ...typography, button: { ...typography.button, fontWeight: 700, textTransform: 'none' as const, }, },
     components: { ...components, MuiButton: { styleOverrides: { root: { borderRadius: 4, fontWeight: 700, border: isDark ? '1px solid white' : '1px solid black', }, }, }, },
     customProps: { chart: chartColors, },
   });

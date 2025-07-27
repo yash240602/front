@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { PaletteMode } from '@mui/material';
+import type { PaletteMode } from '@mui/material';
 
 type ThemeName = 'default' | 'highContrast' | 'colorblind';
 

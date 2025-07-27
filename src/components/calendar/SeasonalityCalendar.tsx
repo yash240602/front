@@ -15,7 +15,7 @@ import {
   Today as TodayIcon
 } from '@mui/icons-material';
 import { useMarketDataStore } from '../../store/marketDataStore';
-import { DailyMetrics, CalendarCellData } from '../../types/data';
+import type { DailyMetrics, CalendarCellData } from '../../types/data';
 import CalendarCell from './CalendarCell';
 import { useCalendarStore } from '../../store/calendarStore';
 
@@ -116,12 +116,12 @@ const SeasonalityCalendar = () => {
         </Box>
         <Grid container spacing={0.5}>
           {DAYS_OF_WEEK.map(day => (
-            <Grid item xs={12/7} key={day}>
+            <Grid size={12/7} key={day}>
               <Skeleton variant="text" width="100%" height={30} />
             </Grid>
           ))}
           {Array(42).fill(0).map((_, i) => (
-            <Grid item xs={12/7} key={i}>
+            <Grid size={12/7} key={i}>
               <Skeleton variant="rectangular" width="100%" height={80} sx={{ borderRadius: 1 }} />
             </Grid>
           ))}
@@ -149,7 +149,7 @@ const SeasonalityCalendar = () => {
       
       <Grid container spacing={1} sx={{ mb: 1 }}>
         {DAYS_OF_WEEK.map(day => (
-          <Grid item xs={12/7} key={day}>
+          <Grid size={12/7} key={day}>
             <Typography variant="subtitle2" align="center" sx={{ fontWeight: 600, color: theme.palette.text.secondary }}>
               {day}
             </Typography>
@@ -159,7 +159,7 @@ const SeasonalityCalendar = () => {
       
       <Grid container spacing={1}>
         {calendarDays.map((day, index) => (
-          <Grid item xs={12/7} key={index}>
+          <Grid size={12/7} key={index}>
             <CalendarCell data={day} />
           </Grid>
         ))}

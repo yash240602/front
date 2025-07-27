@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { DailyMetrics } from '../types/data';
+import type { DailyMetrics } from '../types/data';
 
 const coingeckoApi = axios.create({
   baseURL: 'https://api.coingecko.com/api/v3',
@@ -34,7 +34,6 @@ const getQuoteCurrency = (instrument: string): string => {
 
 export const fetchCoinData = async (
   instrument: string,
-  timeframe: '1d' | '1h' | '15m',
   startTimestamp: number,
   endTimestamp: number
 ): Promise<DailyMetrics[]> => {

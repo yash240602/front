@@ -1,1 +1,0 @@
-import type { PaletteMode } from '@mui/material/styles';
