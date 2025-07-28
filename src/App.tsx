@@ -4,6 +4,7 @@ import { getTheme } from './utils/theme';
 import useAppTheme from './hooks/useAppTheme';
 import AppHeader from './components/common/AppHeader';
 import InstrumentPicker from './components/dashboard/InstrumentPicker';
+import FilterPanel from './components/common/FilterPanel';
 import SeasonalityCalendar from './components/calendar/SeasonalityCalendar';
 import MetricsPanel from './components/dashboard/MetricsPanel';
 import ComparisonChart from './components/dashboard/ComparisonChart';
@@ -58,10 +59,18 @@ const App = () => {
                   boxShadow: '0 8px 32px 0 rgba(0,0,0,0.1)'
                 }}
               >
-            <InstrumentPicker />
+                <InstrumentPicker />
               </Box>
-            <SeasonalityCalendar />
-          </Container>
+              
+              <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', lg: 'row' } }}>
+                <Box sx={{ flex: 1 }}>
+                  <FilterPanel />
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <SeasonalityCalendar />
+                </Box>
+              </Box>
+            </Container>
           
           <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', lg: 'row' } }}>
             <Box sx={{ flex: 1 }}>

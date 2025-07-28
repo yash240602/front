@@ -19,6 +19,7 @@ import { useCalendarStore } from '../../store/calendarStore';
 import CalendarCell from './CalendarCell';
 import MonthlyCalendarCell from './MonthlyCalendarCell';
 import LoadingSkeleton from '../common/LoadingSkeleton';
+import VolatilityLegend from './VolatilityLegend';
 import { useCalendarHotkeys } from '../../hooks/useCalendarHotkeys';
 import type { CalendarCellData } from '../../types/data';
 import type { MonthlyMetrics } from '../../utils/monthlyAggregationService';
@@ -217,7 +218,10 @@ const SeasonalityCalendar: React.FC = () => {
       )}
 
       {/* Legend */}
-      <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
+      <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+        {viewMode !== 'month' && (
+          <VolatilityLegend maxVolatility={maxVolatilityInMonth} />
+        )}
         <Typography variant="caption" color="text.secondary">
           💡 Use arrow keys to navigate • Shift+Click for range selection
         </Typography>

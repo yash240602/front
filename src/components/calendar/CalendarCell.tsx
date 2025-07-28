@@ -35,9 +35,20 @@ const CalendarCell: React.FC<CalendarCellProps> = ({ data, maxVolatilityInMonth,
     return cellTime >= startTime && cellTime <= endTime;
   }, [data.date, rangeStart, rangeEnd]);
 
+  const volatilityColor = useMemo(() => {
+    if (!data.metrics?.volatility) return 'transparent';
+    
+    const volatility = data.metrics.volatility;
+    if (volatility < 10) return '#4caf50'; // Green for low volatility
+    if (volatility < 20) return '#ff9800'; // Orange/Yellow for medium volatility
+    return '#f44336'; // Red for high volatility
+  }, [data.metrics?.volatility]);
+
   const volatilityOpacity = useMemo(() => {
     if (!data.metrics?.volatility || !maxVolatilityInMonth) return 0;
-    return Math.max(0.1, data.metrics.volatility / maxVolatilityInMonth);
+    // Use a more gradual opacity scale for better visual distinction
+    const normalizedVolatility = Math.min(data.metrics.volatility / maxVolatilityInMonth, 1);
+    return Math.max(0.2, Math.min(0.8, normalizedVolatility));
   }, [data.metrics, maxVolatilityInMonth]);
 
   const volumeOpacity = useMemo(() => {
@@ -114,7 +125,7 @@ const CalendarCell: React.FC<CalendarCellProps> = ({ data, maxVolatilityInMonth,
               position: 'absolute',
               inset: '5%',
               borderRadius: '50%',
-              backgroundColor: theme.palette.warning.main,
+              backgroundColor: volatilityColor,
               zIndex: 0,
             }}
           />
