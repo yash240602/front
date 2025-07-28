@@ -64,20 +64,20 @@ const AppHeader = ({
     >
       <Toolbar sx={{ justifyContent: 'space-between', py: 2 }}>
         <Box>
-          <Typography 
+        <Typography 
             variant="h5" 
-            component="h1" 
-            sx={{ 
+          component="h1" 
+          sx={{ 
               fontWeight: 800,
               color: theme.palette.common.white,
               letterSpacing: '-0.02em',
               textShadow: '0 2px 4px rgba(0,0,0,0.2)',
               mb: 0.5
-            }}
-          >
-            Market Seasonality Explorer
-          </Typography>
-          
+          }}
+        >
+          Market Seasonality Explorer
+        </Typography>
+        
           {/* Informative Chips */}
           <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
             <Chip

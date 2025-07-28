@@ -6,6 +6,7 @@ import AppHeader from './components/common/AppHeader';
 import InstrumentPicker from './components/dashboard/InstrumentPicker';
 import SeasonalityCalendar from './components/calendar/SeasonalityCalendar';
 import MetricsPanel from './components/dashboard/MetricsPanel';
+import ComparisonChart from './components/dashboard/ComparisonChart';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import CommandPalette from './components/common/CommandPalette';
 
@@ -29,6 +30,7 @@ const App = () => {
 
   return (
     <ErrorBoundary>
+      <CommandPalette />
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Box
@@ -45,37 +47,44 @@ const App = () => {
             onThemeModeToggle={toggleThemeMode}
           />
           
-          <Container component="main" sx={{ flexGrow: 1, py: { xs: 2, md: 4 }, display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <Box 
-              sx={{
-                p: 3,
-                borderRadius: 4,
-                backgroundColor: alpha(theme.palette.background.paper, 0.7),
-                backdropFilter: 'blur(20px)',
-                border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
-                boxShadow: '0 8px 32px 0 rgba(0,0,0,0.1)'
-              }}
-            >
-              <InstrumentPicker />
-            </Box>
+            <Container component="main" sx={{ flexGrow: 1, py: { xs: 2, md: 4 }, display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <Box 
+                sx={{
+                  p: 3,
+                  borderRadius: 4,
+                  backgroundColor: alpha(theme.palette.background.paper, 0.7),
+                  backdropFilter: 'blur(20px)',
+                  border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
+                  boxShadow: '0 8px 32px 0 rgba(0,0,0,0.1)'
+                }}
+              >
+            <InstrumentPicker />
+              </Box>
             <SeasonalityCalendar />
           </Container>
           
-          <MetricsPanel />
+          <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', lg: 'row' } }}>
+            <Box sx={{ flex: 1 }}>
+              <MetricsPanel />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <ComparisonChart />
+            </Box>
+          </Box>
           
-          <Box component="footer" sx={{ py: 2, textAlign: 'center', color: 'white', fontSize: '0.875rem', textShadow: '0 1px 1px rgba(0,0,0,0.2)' }}>
+            <Box component="footer" sx={{ py: 2, textAlign: 'center', color: 'white', fontSize: '0.875rem', textShadow: '0 1px 1px rgba(0,0,0,0.2)' }}>
             Market Seasonality Explorer &copy; {new Date().getFullYear()}
           </Box>
         </Box>
 
-        {/* Command Palette */}
-        <CommandPalette 
-          open={commandPaletteOpen} 
-          onClose={() => setCommandPaletteOpen(false)} 
-        />
+          {/* Command Palette */}
+          <CommandPalette 
+            open={commandPaletteOpen} 
+            onClose={() => setCommandPaletteOpen(false)} 
+          />
       </ThemeProvider>
     </ErrorBoundary>
   );
 };
 
-export default App; 
+export default App;

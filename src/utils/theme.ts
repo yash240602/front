@@ -44,13 +44,13 @@ export const createDefaultTheme = (mode: PaletteMode): Theme => {
 };
 
 export const createHighContrastTheme = (mode: PaletteMode): Theme => {
-    const isDark = mode === 'dark';
+  const isDark = mode === 'dark';
     const chartColors: ChartColors = isDark ? { positive: '#00FF00', negative: '#FF0000', neutral: '#FFFFFF', line: '#FFFFFF', grid: '#444444', background: '#000000', text: '#FFFFFF', volume: '#00AAFF' } : { positive: '#008800', negative: '#CC0000', neutral: '#000000', line: '#000000', grid: '#CCCCCC', background: '#FFFFFF', text: '#000000', volume: '#0055AA' };
     return createTheme({ palette: { mode, primary: { main: isDark ? '#FFFFFF' : '#000000' }, secondary: { main: isDark ? '#FFFF00' : '#6200EE' }, error: { main: '#FF0000' }, success: { main: '#00CC00' }, warning: { main: '#FF6600' }, background: { default: isDark ? '#000000' : '#FFFFFF', paper: isDark ? '#121212' : '#FFFFFF' }, text: { primary: isDark ? '#FFFFFF' : '#000000', secondary: isDark ? '#DDDDDD' : '#333333' } }, typography: { ...typography, button: { ...typography.button, fontWeight: 700 } }, components: { ...components, MuiButton: { styleOverrides: { root: { borderRadius: 4, fontWeight: 700, border: isDark ? '1px solid white' : '1px solid black' } } } }, customProps: { chart: chartColors } });
 };
 
 export const createColorblindFriendlyTheme = (mode: PaletteMode): Theme => {
-    const isDark = mode === 'dark';
+  const isDark = mode === 'dark';
     const chartColors: ChartColors = isDark ? { positive: '#0072B2', negative: '#D55E00', neutral: '#F0E442', line: '#FFFFFF', grid: '#444444', background: '#121212', text: '#FFFFFF', volume: '#56B4E9' } : { positive: '#0072B2', negative: '#D55E00', neutral: '#CC79A7', line: '#000000', grid: '#DDDDDD', background: '#FFFFFF', text: '#000000', volume: '#56B4E9' };
     return createTheme({ palette: { mode, primary: { main: '#0072B2' }, secondary: { main: '#CC79A7' }, error: { main: '#D55E00' }, success: { main: '#009E73' }, warning: { main: '#F0E442' }, background: { default: isDark ? '#121212' : '#f5f5f5', paper: isDark ? '#1e1e1e' : '#ffffff' }, text: { primary: isDark ? '#e0e0e0' : '#212121', secondary: isDark ? '#b0b0b0' : '#666666' } }, typography, components, customProps: { chart: chartColors } });
 };

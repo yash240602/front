@@ -23,9 +23,7 @@ export interface Candle {
  */
 export interface DailyMetrics {
   /** The date for these metrics (ISO string or timestamp) */
-  date: string | number;
-  /** Trading pair or instrument symbol */
-  symbol: string;
+  date: string;
   /** Opening price for the day */
   open: number;
   /** Highest price of the day */
@@ -38,38 +36,10 @@ export interface DailyMetrics {
   volume: number;
   /** Percentage change for the day (close/open - 1) * 100 */
   changePercent: number;
-  
-  // Technical indicators (optional)
-  /** Simple Moving Average (20 periods) */
-  sma20?: number;
-  /** Simple Moving Average (50 periods) */
-  sma50?: number;
-  /** Simple Moving Average (200 periods) */
-  sma200?: number;
-  /** Relative Strength Index */
-  rsi?: number;
-  /** Moving Average Convergence Divergence */
-  macd?: {
-    /** MACD line value */
-    line: number;
-    /** MACD signal line value */
-    signal: number;
-    /** MACD histogram value */
-    histogram: number;
-  };
-  /** Average True Range - volatility indicator */
-  atr?: number;
   /** 30-day rolling volatility (standard deviation) */
   volatility?: number;
-  /** Bollinger Bands */
-  bollinger?: {
-    /** Upper band value */
-    upper: number;
-    /** Middle band value (typically SMA20) */
-    middle: number;
-    /** Lower band value */
-    lower: number;
-  };
+  /** Instrument symbol for the day */
+  instrument?: string;
 }
 
 /**
@@ -79,21 +49,17 @@ export interface CalendarCellData {
   /** The date this cell represents */
   date: Date;
   /** Day of month (1-31) */
-  day: number;
+  day: string;
+  /** Whether this date is in the current month being viewed */
+  isCurrentMonth: boolean;
+  /** Whether this date is the current date */
+  isToday: boolean;
   /** Whether this date has associated market data */
   hasData: boolean;
-  /** Percentage change for this day (if data exists) */
-  changePercent?: number;
-  /** Absolute price change for this day (if data exists) */
-  priceChange?: number;
-  /** Volume for this day (if data exists) */
-  volume?: number;
   /** Complete metrics for this day (if data exists) */
   metrics?: DailyMetrics;
+  /** Percentage change for this day (if data exists) */
+  changePercent?: number;
   /** Whether this date is selected in the UI */
-  isSelected?: boolean;
-  /** Whether this date is the current date */
-  isToday?: boolean;
-  /** Whether this date is in the current month being viewed */
-  isCurrentMonth?: boolean;
-} 
+  isSelected: boolean;
+}

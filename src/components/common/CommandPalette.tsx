@@ -86,6 +86,17 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onClose }) => {
     onClose();
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setOpen(o => !o);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <Dialog
       open={open}
@@ -187,4 +198,4 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onClose }) => {
   );
 };
 
-export default CommandPalette; 
+export default CommandPalette;
